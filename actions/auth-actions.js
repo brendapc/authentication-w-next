@@ -1,5 +1,5 @@
 'use server';
-import { createAuthSession } from "@/lib/auth";
+import { createAuthSession, destroyAuthSession } from "@/lib/auth";
 import db from "@/lib/db";
 import { hashUserPassword, verifyPassword } from "@/lib/hash";
 import { createUser } from "@/lib/user";
@@ -61,3 +61,8 @@ export async function getUserByEmail(email){
 export async function authHelper(mode, prevState, formData){
     return mode === 'login' ? login(prevState, formData) : signup(prevState, formData);
 }
+
+export async function logout(){
+    await destroyAuthSession();
+    redirect('/');
+}   

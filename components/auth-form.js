@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link';
-import { authHelper, signup } from '@/actions/auth-actions';
+import { authHelper } from '@/actions/auth-actions';
 import { useFormState } from 'react-dom';
 
 export default function AuthForm({ mode }) {
