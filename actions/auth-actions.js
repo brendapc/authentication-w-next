@@ -1,11 +1,11 @@
 'use server';
-
 import { createAuthSession } from "@/lib/auth";
-import { hashUserPassword } from "@/lib/hash";
+import db from "@/lib/db";
+import { hashUserPassword, verifyPassword } from "@/lib/hash";
 import { createUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 
-export async function signup(prevState, formData){
+export async function signup(prevState, formData){ //params from useFormState
     const email = formData.get('email'); //from the name atribute of the input element
     const password = formData.get('password');
 
@@ -38,4 +38,26 @@ export async function signup(prevState, formData){
         }
         throw error;
     }
+}
+
+export async function login(prevState, formData){
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    const user = await getUserByEmail(email);
+
+    if(!user || !verifyPassword(password, user.password)){
+        return { errors: { email: 'Invalid email or password' } };
+    }
+
+    await createAuthSession(user.id);
+    redirect('/training');
+}
+
+export async function getUserByEmail(email){
+   return db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+}
+
+export async function authHelper(mode, prevState, formData){
+    return mode === 'login' ? login(prevState, formData) : signup(prevState, formData);
 }

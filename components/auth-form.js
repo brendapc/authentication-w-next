@@ -1,10 +1,10 @@
 "use client"
 import Link from 'next/link';
-import { signup } from '@/actions/auth-actions';
+import { authHelper, signup } from '@/actions/auth-actions';
 import { useFormState } from 'react-dom';
 
 export default function AuthForm({ mode }) {
-  const [formState, formAction] = useFormState(signup, {})
+  const [formState, formAction] = useFormState(authHelper.bind(null, mode), {}) //bind 1rst agument is preconfigurations (don't need) 2nd argument is a new param required by authHelper
   return (
     <form id="auth-form" action={formAction}>
       <div>
@@ -28,7 +28,7 @@ export default function AuthForm({ mode }) {
       <p>
         <button type="submit">
           {mode === 'login' ? 'Login' : 'Create Account'}
-        </button>
+         </button>
       </p>
       <p>
         {mode === 'login' && <Link href="/?mode=signup">Create an account.</Link> }
